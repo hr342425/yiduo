@@ -17,6 +17,14 @@ else
   INSTALL_USER="$USER"
 fi
 
+case "$DOCKER_REGISTRY_MIRROR" in
+  *xxxxxx*|*你的专属ID*|*你的*)
+    echo "DOCKER_REGISTRY_MIRROR looks like a placeholder: $DOCKER_REGISTRY_MIRROR" >&2
+    echo "Use the exact accelerator URL from your ACR console, or leave DOCKER_REGISTRY_MIRROR empty." >&2
+    exit 1
+    ;;
+esac
+
 if [ "$REMOVE_OLD_DOCKER_PACKAGES" = "1" ]; then
   log "removing old Ubuntu docker packages if present"
   "${SUDO[@]}" apt-get remove -y \

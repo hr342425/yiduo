@@ -179,25 +179,33 @@ nano deploy/nginx.conf
 
 把 `yiduo.your-domain.com` 和 `www.yiduo.your-domain.com` 替换为真实域名。
 
-如果构建时报 Docker Hub 超时，例如卡在：
+当前 Dockerfile 已经避免使用 Docker Hub 官方 `node` / `nginx` 基础镜像：
 
 ```text
-load metadata for docker.io/library/node:22-bookworm-slim
-load metadata for docker.io/library/nginx:1.27-alpine
+FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/alinux3
+Node.js: https://npmmirror.com/mirrors/node/
+npm registry: https://registry.npmmirror.com
+nginx: 通过 Alibaba Cloud Linux 的 yum 源安装
 ```
 
-说明服务器拉不到 Docker Hub 基础镜像。优先在阿里云容器镜像服务 ACR 里把 `node:22-bookworm-slim` 和 `nginx:1.27-alpine` 同步/导入到自己的命名空间，然后在 `.env` 里改为你的 ACR 地址：
+如果之前配置过不可用的 Docker Hub 加速器，报错里可能出现：
 
-```env
-NODE_IMAGE=registry.cn-hangzhou.aliyuncs.com/你的命名空间/node:22-bookworm-slim
-NGINX_IMAGE=registry.cn-hangzhou.aliyuncs.com/你的命名空间/nginx:1.27-alpine
+```text
+unexpected status from HEAD request to https://xxxxxx.mirror.aliyuncs.com/...: 403 Forbidden
 ```
 
-如果你已经有稳定可用的国内 Docker Hub 代理镜像，也可以临时写成类似下面的形式，具体域名以你实际可访问的镜像服务为准：
+说明当前 Docker Hub 加速器地址不可用：可能还是文档占位符、地址写错、账号未开通对应加速器，或该加速器已拒绝 Docker Hub 代理请求。这个项目现在不需要 Docker Hub 加速器，建议直接移除错误配置：
 
-```env
-NODE_IMAGE=你的国内镜像代理/library/node:22-bookworm-slim
-NGINX_IMAGE=你的国内镜像代理/library/nginx:1.27-alpine
+```bash
+cat /etc/docker/daemon.json
+docker info | sed -n '/Registry Mirrors/,+5p'
+
+cat > /etc/docker/daemon.json <<'JSON'
+{}
+JSON
+
+systemctl daemon-reload
+systemctl restart docker
 ```
 
 一键部署：

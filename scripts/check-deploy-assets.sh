@@ -42,17 +42,15 @@ require_executable scripts/install-docker-ubuntu-aliyun.sh
 
 require_contains Dockerfile "npm ci"
 require_contains Dockerfile "npm run build"
-require_contains Dockerfile "ARG NODE_IMAGE"
-require_contains Dockerfile 'FROM ${NODE_IMAGE} AS site-build'
-require_contains Dockerfile 'FROM ${NGINX_IMAGE}'
+require_contains Dockerfile "alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/alinux3 AS site-build"
+require_contains Dockerfile "npmmirror.com/mirrors/node"
+require_contains Dockerfile "registry.npmmirror.com"
+require_contains Dockerfile "yum install -y nginx"
 require_contains Dockerfile "COPY --from=site-build /app/dist /usr/share/nginx/html"
 
 require_contains docker-compose.yml "yiduo-site"
-require_contains docker-compose.yml "NODE_IMAGE"
-require_contains docker-compose.yml "NGINX_IMAGE"
 require_contains docker-compose.yml "80:80"
 require_contains docker-compose.yml "deploy/nginx.conf"
-require_contains docker-compose.ip-test.yml "NODE_IMAGE"
 require_contains docker-compose.ip-test.yml "8000:80"
 
 require_contains deploy/deploy.sh "git pull --ff-only"
@@ -68,11 +66,13 @@ require_contains deploy/nginx.conf.example "server_name yiduo.your-domain.com"
 
 require_contains docs/deployment.md "ICP备案"
 require_contains docs/deployment.md "mirrors.aliyun.com/docker-ce"
+require_contains docs/deployment.md "403 Forbidden"
 require_contains docs/deployment.md "DEPLOY_MODE=production ./deploy/deploy.sh"
 require_contains docs/ip-test-deployment.md "http://云服务器公网IP:8000"
 require_contains docs/ip-test-deployment.md "docker-compose.ip-test.yml"
 require_contains docs/ip-test-deployment.md "mirrors.aliyun.com/docker-ce"
 require_contains scripts/install-docker-ubuntu-aliyun.sh "mirrors.aliyun.com/docker-ce"
 require_contains scripts/install-docker-ubuntu-aliyun.sh "docker-compose-plugin"
+require_contains scripts/install-docker-ubuntu-aliyun.sh "looks like a placeholder"
 
 echo "Deployment assets look good."

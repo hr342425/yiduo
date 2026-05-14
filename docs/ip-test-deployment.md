@@ -156,19 +156,16 @@ git clone <repo-url> /opt/yiduo/app
 cd /opt/yiduo/app
 ```
 
-如果服务器拉 Docker Hub 基础镜像超时，可以先复制环境变量文件，并把基础镜像改成你的阿里云 ACR 镜像：
+当前 Dockerfile 已经避免使用 Docker Hub 官方 `node` / `nginx` 基础镜像，构建会使用：
 
-```bash
-cp .env.example .env
-nano .env
+```text
+FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/alinux3
+Node.js: https://npmmirror.com/mirrors/node/
+npm registry: https://registry.npmmirror.com
+nginx: 通过 Alibaba Cloud Linux 的 yum 源安装
 ```
 
-示例：
-
-```env
-NODE_IMAGE=registry.cn-hangzhou.aliyuncs.com/你的命名空间/node:22-bookworm-slim
-NGINX_IMAGE=registry.cn-hangzhou.aliyuncs.com/你的命名空间/nginx:1.27-alpine
-```
+如果报 `https://xxxxxx.mirror.aliyuncs.com/...: 403 Forbidden`，说明当前 Docker Hub 加速器地址不可用。这个项目现在不依赖 Docker Hub 加速器，可以删除 `/etc/docker/daemon.json` 里的错误 `registry-mirrors` 后重启 Docker。
 
 ## 5. 启动 IP 测试部署
 
