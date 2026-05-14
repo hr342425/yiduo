@@ -1,0 +1,181 @@
+---
+const groups = [
+  {
+    title: "信息化解决方案",
+    key: "solutions",
+    description: "适合放在公司简介、解决方案或首页首屏辅助图。",
+  },
+  {
+    title: "系统集成与软件开发",
+    key: "integration",
+    description: "适合展示机房实施、集成调试、软件交付和项目验收。",
+  },
+  {
+    title: "设备销售与分销",
+    key: "equipment",
+    description: "适合展示软硬件设备供应、仓储、到货验收与客户交付。",
+  },
+  {
+    title: "运维维护与租赁",
+    key: "maintenance",
+    description: "适合展示设备维修、巡检维护、租赁备机和现场支持。",
+  },
+];
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>奕多官网业务图片候选</title>
+  </head>
+  <body>
+    <header class="page-header">
+      <a href="/">返回官网首页</a>
+      <h1>业务图片候选</h1>
+      <p>每类业务 5 张，均为 1200×675 横图。挑选时直接告诉我文件名即可。</p>
+    </header>
+
+    <main>
+      {
+        groups.map((group) => (
+          <section class="group" aria-labelledby={`${group.key}-title`}>
+            <div class="group-heading">
+              <h2 id={`${group.key}-title`}>{group.title}</h2>
+              <p>{group.description}</p>
+            </div>
+            <div class="grid">
+              {[1, 2, 3, 4, 5].map((number) => {
+                const filename = `${group.key}-${String(number).padStart(2, "0")}.png`;
+                const src = `/images/generated/business/${filename}`;
+                return (
+                  <article class="candidate">
+                    <img src={src} alt={`${group.title}候选图 ${number}`} loading="lazy" />
+                    <strong>{filename}</strong>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ))
+      }
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --ink: #15201c;
+    --muted: #5d6a63;
+    --line: rgba(21, 32, 28, 0.12);
+    --paper: #f8fbf6;
+    --accent: #0f6f63;
+    font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background:
+      linear-gradient(90deg, rgba(15, 111, 99, 0.04) 1px, transparent 1px) 0 0 / 84px 84px,
+      #f8fbf6;
+  }
+
+  a {
+    color: var(--accent);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .page-header {
+    padding: clamp(36px, 7vw, 78px) clamp(18px, 5vw, 72px) 28px;
+  }
+
+  h1,
+  h2,
+  p {
+    margin: 0;
+  }
+
+  h1 {
+    margin-top: 20px;
+    font-size: clamp(38px, 6vw, 72px);
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+
+  .page-header p {
+    max-width: 760px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1.8;
+  }
+
+  main {
+    padding: 0 clamp(18px, 5vw, 72px) 72px;
+  }
+
+  .group {
+    padding: 48px 0 58px;
+    border-top: 1px solid var(--line);
+  }
+
+  .group-heading {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.55fr) minmax(280px, 1fr);
+    gap: 24px;
+    align-items: end;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: clamp(26px, 4vw, 44px);
+    line-height: 1.15;
+  }
+
+  .group-heading p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .candidate {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .candidate img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .candidate strong {
+    display: block;
+    padding: 14px 16px 16px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 760px) {
+    .group-heading,
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

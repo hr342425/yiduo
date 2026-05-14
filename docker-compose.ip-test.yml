@@ -1,0 +1,19 @@
+services:
+  site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${YIDUO_IMAGE:-yiduo-official-site:latest}
+    container_name: ${YIDUO_CONTAINER_NAME:-yiduo-site}
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+

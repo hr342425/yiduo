@@ -1,0 +1,51 @@
+# Replace yiduo.your-domain.com with your real ICP-filed domain.
+# This file is for the nginx service in docker-compose.yml.
+
+server {
+    listen 80;
+    server_name yiduo.your-domain.com www.yiduo.your-domain.com;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    charset utf-8;
+    server_tokens off;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+
+    gzip on;
+    gzip_comp_level 5;
+    gzip_min_length 1024;
+    gzip_types
+        text/plain
+        text/css
+        text/xml
+        application/javascript
+        application/json
+        application/xml
+        image/svg+xml;
+
+    location = /healthz {
+        access_log off;
+        add_header Content-Type text/plain;
+        return 200 "ok\n";
+    }
+
+    location /_astro/ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    location ~* \.(?:png|jpg|jpeg|gif|webp|ico|svg|css|js|woff2?)$ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=604800";
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-cache";
+    }
+}
+
