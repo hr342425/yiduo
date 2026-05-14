@@ -10,13 +10,16 @@ log() {
 }
 
 if [ "$(id -u)" -eq 0 ]; then
-  echo "Please run this script as a normal sudo-capable user, not as root." >&2
-  exit 1
+  SUDO=()
+  INSTALL_USER="${SUDO_USER:-}"
+else
+  SUDO=(sudo)
+  INSTALL_USER="$USER"
 fi
 
 if [ "$REMOVE_OLD_DOCKER_PACKAGES" = "1" ]; then
   log "removing old Ubuntu docker packages if present"
-  sudo apt-get remove -y \
+  "${SUDO[@]}" apt-get remove -y \
     docker.io \
     docker-doc \
     docker-compose \
@@ -29,32 +32,32 @@ else
 fi
 
 log "installing apt prerequisites"
-sudo apt-get update
-sudo apt-get install -y ca-certificates curl gnupg lsb-release git ufw
+"${SUDO[@]}" apt-get update
+"${SUDO[@]}" apt-get install -y ca-certificates curl gnupg lsb-release git ufw
 
 log "adding Docker CE apt key from $DOCKER_CE_MIRROR"
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo rm -f /etc/apt/keyrings/docker.gpg
-curl -fsSL "$DOCKER_CE_MIRROR/linux/ubuntu/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+"${SUDO[@]}" install -m 0755 -d /etc/apt/keyrings
+"${SUDO[@]}" rm -f /etc/apt/keyrings/docker.gpg
+curl -fsSL "$DOCKER_CE_MIRROR/linux/ubuntu/gpg" | "${SUDO[@]}" gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+"${SUDO[@]}" chmod a+r /etc/apt/keyrings/docker.gpg
 
 log "adding Docker CE apt repository"
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] $DOCKER_CE_MIRROR/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+  "${SUDO[@]}" tee /etc/apt/sources.list.d/docker.list >/dev/null
 
 log "installing Docker Engine and Compose plugin"
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+"${SUDO[@]}" apt-get update
+"${SUDO[@]}" apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 if [ -n "$DOCKER_REGISTRY_MIRROR" ]; then
   log "configuring Docker registry mirror: $DOCKER_REGISTRY_MIRROR"
-  sudo mkdir -p /etc/docker
+  "${SUDO[@]}" mkdir -p /etc/docker
   if [ -f /etc/docker/daemon.json ]; then
-    sudo cp /etc/docker/daemon.json "/etc/docker/daemon.json.bak.$(date +%Y%m%d%H%M%S)"
+    "${SUDO[@]}" cp /etc/docker/daemon.json "/etc/docker/daemon.json.bak.$(date +%Y%m%d%H%M%S)"
   fi
-  sudo tee /etc/docker/daemon.json >/dev/null <<JSON
+  "${SUDO[@]}" tee /etc/docker/daemon.json >/dev/null <<JSON
 {
   "registry-mirrors": ["$DOCKER_REGISTRY_MIRROR"]
 }
@@ -62,19 +65,27 @@ JSON
 fi
 
 log "enabling Docker service"
-sudo systemctl enable --now docker
-sudo usermod -aG docker "$USER"
+"${SUDO[@]}" systemctl enable --now docker
+
+if [ -n "$INSTALL_USER" ] && [ "$INSTALL_USER" != "root" ]; then
+  log "adding $INSTALL_USER to docker group"
+  "${SUDO[@]}" usermod -aG docker "$INSTALL_USER"
+else
+  log "running as root; skipping docker group update"
+fi
 
 log "Docker installed"
-docker --version || sudo docker --version
-docker compose version || sudo docker compose version
+docker --version
+docker compose version
 
 cat <<'EOF'
 
-If you were just added to the docker group, log out and log back in over SSH,
-then verify with:
+Verify with:
 
   docker info
   docker compose version
+
+If a non-root user was added to the docker group, log out and log back in over
+SSH before running docker as that user.
 
 EOF

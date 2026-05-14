@@ -54,6 +54,8 @@ sudo systemctl enable --now docker
 sudo usermod -aG docker "$USER"
 ```
 
+如果服务器当前就是 `root` 登录，最后一行 `sudo usermod -aG docker "$USER"` 可以不执行；`root` 本身可以直接运行 Docker。
+
 如果你有阿里云容器镜像服务控制台里的专属镜像加速地址，可以继续配置 Docker Hub 拉取加速：
 
 ```bash
@@ -74,7 +76,9 @@ sudo systemctl restart docker
 bash scripts/install-docker-ubuntu-aliyun.sh
 ```
 
-重新登录 SSH 后验证：
+这个脚本支持 `root` 登录和普通 sudo 用户登录。普通用户执行时会自动把当前用户加入 `docker` 组；`root` 执行时会跳过这一步。
+
+如果是普通用户安装，重新登录 SSH 后验证；如果是 `root` 安装，可以直接验证：
 
 ```bash
 docker --version
