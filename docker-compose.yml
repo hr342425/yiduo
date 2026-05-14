@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:22-bookworm-slim}
+        NGINX_IMAGE: ${NGINX_IMAGE:-nginx:1.27-alpine}
     image: ${YIDUO_IMAGE:-yiduo-official-site:latest}
     container_name: ${YIDUO_CONTAINER_NAME:-yiduo-site}
     restart: unless-stopped
@@ -16,4 +19,3 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-

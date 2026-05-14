@@ -42,12 +42,17 @@ require_executable scripts/install-docker-ubuntu-aliyun.sh
 
 require_contains Dockerfile "npm ci"
 require_contains Dockerfile "npm run build"
-require_contains Dockerfile "nginx:1.27-alpine"
+require_contains Dockerfile "ARG NODE_IMAGE"
+require_contains Dockerfile 'FROM ${NODE_IMAGE} AS site-build'
+require_contains Dockerfile 'FROM ${NGINX_IMAGE}'
 require_contains Dockerfile "COPY --from=site-build /app/dist /usr/share/nginx/html"
 
 require_contains docker-compose.yml "yiduo-site"
+require_contains docker-compose.yml "NODE_IMAGE"
+require_contains docker-compose.yml "NGINX_IMAGE"
 require_contains docker-compose.yml "80:80"
 require_contains docker-compose.yml "deploy/nginx.conf"
+require_contains docker-compose.ip-test.yml "NODE_IMAGE"
 require_contains docker-compose.ip-test.yml "8000:80"
 
 require_contains deploy/deploy.sh "git pull --ff-only"

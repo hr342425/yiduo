@@ -1,4 +1,7 @@
-FROM node:22-bookworm-slim AS site-build
+ARG NODE_IMAGE=node:22-bookworm-slim
+ARG NGINX_IMAGE=nginx:1.27-alpine
+
+FROM ${NODE_IMAGE} AS site-build
 WORKDIR /app
 
 COPY package*.json ./
@@ -9,7 +12,7 @@ COPY public ./public
 COPY src ./src
 RUN npm run build
 
-FROM nginx:1.27-alpine
+FROM ${NGINX_IMAGE}
 
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=site-build /app/dist /usr/share/nginx/html

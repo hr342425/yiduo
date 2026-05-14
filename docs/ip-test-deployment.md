@@ -156,6 +156,20 @@ git clone <repo-url> /opt/yiduo/app
 cd /opt/yiduo/app
 ```
 
+如果服务器拉 Docker Hub 基础镜像超时，可以先复制环境变量文件，并把基础镜像改成你的阿里云 ACR 镜像：
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+示例：
+
+```env
+NODE_IMAGE=registry.cn-hangzhou.aliyuncs.com/你的命名空间/node:22-bookworm-slim
+NGINX_IMAGE=registry.cn-hangzhou.aliyuncs.com/你的命名空间/nginx:1.27-alpine
+```
+
 ## 5. 启动 IP 测试部署
 
 使用临时 Compose 文件启动：
