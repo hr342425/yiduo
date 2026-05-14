@@ -255,8 +255,8 @@ const galleryItems = [
         </div>
         <address class="contact-list">
           <a href="tel:13756513180">
-            <span>电话</span>
-            <strong>13756513180</strong>
+            <span>联系人</span>
+            <strong>程基帅 13756513180</strong>
           </a>
           <a href="mailto:990289424@qq.com">
             <span>邮箱</span>
@@ -264,7 +264,7 @@ const galleryItems = [
           </a>
           <p>
             <span>地址</span>
-            <strong>长春市朝阳区工农大路 1313 号长春百脑汇科技大厦 1421 号房</strong>
+            <strong>吉林省长春市朝阳区工农大路1313号百脑汇科技大厦1411-1室</strong>
           </p>
         </address>
       </section>
@@ -449,8 +449,15 @@ const galleryItems = [
 
   .hero-visual {
     position: relative;
-    aspect-ratio: 16 / 9;
-    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(128px, 0.42fr);
+    grid-template-rows: auto auto;
+    align-content: flex-end;
+    align-items: flex-end;
+    gap: clamp(12px, 1.6vw, 20px);
+    aspect-ratio: 5 / 4;
+    min-height: clamp(360px, 36vw, 460px);
+    padding: clamp(20px, 3vw, 42px);
     border-radius: 18px;
     overflow: hidden;
     background: #172a24;
@@ -461,7 +468,7 @@ const galleryItems = [
   .hero-visual::before {
     content: "";
     position: absolute;
-    inset: 24px;
+    inset: clamp(14px, 2.4vw, 24px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 12px;
     z-index: 2;
@@ -488,20 +495,23 @@ const galleryItems = [
   }
 
   .visual-panel {
-    position: absolute;
+    position: relative;
     z-index: 3;
-    border: 1px solid rgba(255, 255, 255, 0.38);
+    min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
-    background: rgba(250, 254, 248, 0.9);
+    background: rgba(250, 254, 248, 0.44);
     color: var(--ink);
-    box-shadow: 0 20px 52px rgba(10, 33, 28, 0.22);
+    box-shadow: 0 14px 30px rgba(10, 33, 28, 0.12);
+    word-break: keep-all;
+    backdrop-filter: blur(16px) saturate(1.08);
   }
 
   .panel-main {
-    left: clamp(20px, 5vw, 72px);
-    right: clamp(28px, 5vw, 84px);
-    top: 66px;
-    padding: 30px;
+    grid-column: 1 / -1;
+    justify-self: end;
+    width: min(100%, 462px);
+    padding: clamp(18px, 2.4vw, 28px);
   }
 
   .panel-kicker {
@@ -515,7 +525,7 @@ const galleryItems = [
   .panel-main strong {
     display: block;
     margin-top: 12px;
-    font-size: clamp(30px, 4vw, 52px);
+    font-size: clamp(27px, 3.4vw, 43px);
     line-height: 1.05;
   }
 
@@ -547,17 +557,18 @@ const galleryItems = [
   }
 
   .panel-side {
-    right: 42px;
-    bottom: 64px;
-    width: 190px;
-    padding: 24px;
+    grid-column: 2;
+    grid-row: 2;
+    align-self: stretch;
+    padding: clamp(18px, 2.2vw, 24px);
   }
 
   .panel-side strong {
     display: block;
     margin-top: 18px;
-    font-size: 42px;
+    font-size: clamp(34px, 4vw, 42px);
     line-height: 1;
+    white-space: nowrap;
   }
 
   .status-dot {
@@ -570,12 +581,12 @@ const galleryItems = [
   }
 
   .panel-list {
-    left: 38px;
-    bottom: 48px;
+    grid-column: 1;
+    grid-row: 2;
     display: grid;
     gap: 10px;
-    width: 210px;
-    padding: 18px;
+    align-content: center;
+    padding: clamp(16px, 2vw, 20px);
   }
 
   .panel-list span {
@@ -895,6 +906,15 @@ const galleryItems = [
       min-height: auto;
     }
 
+    .hero-visual {
+      align-content: end;
+      padding: clamp(20px, 4vw, 34px);
+    }
+
+    .panel-main {
+      width: min(100%, 520px);
+    }
+
     .proof-strip,
     .business-grid {
       grid-template-columns: 1fr;
@@ -942,30 +962,37 @@ const galleryItems = [
 
     .hero-visual {
       aspect-ratio: 4 / 3;
+      min-height: 440px;
       border-radius: 12px;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+      align-content: end;
     }
 
     .panel-main {
-      left: 18px;
-      right: 18px;
-      top: 42px;
+      grid-column: 1;
+      width: 100%;
       padding: 22px;
     }
 
-    .panel-side,
-    .panel-list {
-      width: auto;
+    .panel-list,
+    .panel-side {
+      grid-column: 1;
+      grid-row: auto;
     }
 
     .panel-side {
-      right: 18px;
-      bottom: 34px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .panel-side strong,
+    .panel-side p {
+      margin-top: 0;
     }
 
     .panel-list {
-      left: 18px;
-      right: 150px;
-      bottom: 34px;
       padding: 14px;
     }
 
