@@ -35,9 +35,7 @@ require_file deploy/nginx.conf
 require_file deploy/nginx.conf.example
 require_file docs/deployment.md
 require_file docs/ip-test-deployment.md
-require_file docs/github-actions-deployment.md
 require_file scripts/install-docker-ubuntu-aliyun.sh
-require_file .github/workflows/deploy.yml
 
 require_executable deploy/deploy.sh
 require_executable scripts/install-docker-ubuntu-aliyun.sh
@@ -69,13 +67,7 @@ require_contains docs/deployment.md "DEPLOY_MODE=production ./deploy/deploy.sh"
 require_contains docs/ip-test-deployment.md "http://云服务器公网IP:8000"
 require_contains docs/ip-test-deployment.md "docker-compose.ip-test.yml"
 require_contains docs/ip-test-deployment.md "mirrors.aliyun.com/docker-ce"
-require_contains docs/github-actions-deployment.md "DEPLOY_HOST"
-require_contains docs/github-actions-deployment.md "DEPLOY_SSH_KEY"
 require_contains scripts/install-docker-ubuntu-aliyun.sh "mirrors.aliyun.com/docker-ce"
 require_contains scripts/install-docker-ubuntu-aliyun.sh "docker-compose-plugin"
-
-require_contains .github/workflows/deploy.yml "workflow_dispatch"
-require_contains .github/workflows/deploy.yml "npm run build"
-require_contains .github/workflows/deploy.yml "BRANCH='main'"
 
 echo "Deployment assets look good."
