@@ -20,3 +20,9 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## 部署文档
+
+- [Cloudflare Pages 托管与域名绑定教程](docs/cloudflare-pages-deployment.md)
+- [云服务器 Docker 部署方案](docs/deployment.md)
+- [备案完成前的 IP 直连测试部署](docs/ip-test-deployment.md)
